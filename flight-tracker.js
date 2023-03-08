@@ -26,7 +26,7 @@ document.getElementsByClassName('container')[0].insertBefore(createModalButton(b
 createModal(modalElements);
 resetInputs();
 document.addEventListener('keyup', keyUpHandler);
-const headers = [['Latitude', 1], ['Longitude', 2], ['Heading', 3], ['Altitude', 4], ['Ground Speed', 5], ['On Ground', 14], ['Vertical Speed', 15], ['Aircraft', 8], ['Registration', 9], ['Origin Airport', 11], ['Destination Airport', 12], ['Flight', 13], ['Call Sign', 16], ['Airline', 18]];
+const headers = [['Latitude', 1], ['Longitude', 2], ['Heading', 3], ['Altitude', 4], ['Ground Speed', 5], ['On Ground', 14], ['Vertical Speed', 15], ['Aircraft', 8], ['Registration', 9], ['Origin Airport', 11], ['Destination Airport', 12], ['Flight', 13], ['Call Sign', 16], ['Airline', 18], ['Flightradar24 Link', 19]];
 const tr = document.createElement('tr');
 for (const header of headers) {
   tr.appendChild(createElement('th', header[0]));
@@ -104,6 +104,17 @@ async function list () {
             } else if (header[1] === 18) {
               const description = details[1] === '' ? '' : (flight[18] === '' ? '' : ' - ') + details[1];
               tr.appendChild(createElement('td', `${flight[18]}${description}`));
+            } else if (header[1] === 19) {
+              const i = document.createElement('i');
+              i.setAttribute('class', 'fas fa-external-link-alt');
+              const a = document.createElement('a');
+              a.setAttribute('target', '_blank');
+              a.setAttribute('rel', 'noopener noreferrer');
+              a.setAttribute('href', `https://www.flightradar24.com/multiview/${flightId}`);
+              a.appendChild(i);
+              const td = document.createElement('td');
+              td.appendChild(a);
+              tr.appendChild(td);
             } else {
               tr.appendChild(createElement('td', flight[header[1]]));
             }
