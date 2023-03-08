@@ -12,6 +12,14 @@ function createElement(tr, type, content) {
   tr.appendChild(element);
 }
 
+function getFlagEmoji(countryCode) {
+  const codePoints = countryCode
+    .toUpperCase()
+    .split('')
+    .map(char => 127397 + char.charCodeAt());
+  return String.fromCodePoint(...codePoints);
+}
+
 async function getDetails(flightId) {
   return window.fetch(`${FLIGHTRADAR_URL}clickhandler/?flight=${flightId}`, { headers: { 'Origin': 'https://berkerol.github.io' } })
     .then(res => {
@@ -20,7 +28,7 @@ async function getDetails(flightId) {
     .then(res => {
       const origin = res.airport.origin;
       const destination = res.airport.destination;
-      return [res.aircraft.model === undefined ? '' : res.aircraft.model.text, res.airline === null ? '' : res.airline.name, origin === null ? '' : origin.name, destination === null ? '' : destination.name];
+      return [res.aircraft.model === undefined ? '' : res.aircraft.model.text, res.airline === null ? '' : res.airline.name, origin === null ? '' : origin.position.country.code, origin === null ? '' : origin.name, destination === null ? '' : destination.position.country.code, destination === null ? '' : destination.name];
     });
 }
 
@@ -43,10 +51,10 @@ async function list() {
               const description = details[0] === '' ? '' : ` - ${details[0]}`;
               createElement(tr, 'td', `${flight[8]}${description}`);
             } else if (header[1] === 11) {
-              const description = details[2] === '' ? '' : ` - ${details[2].replace(' Airport', '')}`;
+              const description = details[2] === '' ? '' : ` - ${getFlagEmoji(details[2])} ${details[3].replace(' Airport', '')}`;
               createElement(tr, 'td', `${flight[11]}${description}`);
             } else if (header[1] === 12) {
-              const description = details[4] === '' ? '' : ` - ${details[3].replace(' Airport', '')}`;
+              const description = details[4] === '' ? '' : ` - ${getFlagEmoji(details[4])} ${details[5].replace(' Airport', '')}`;
               createElement(tr, 'td', `${flight[12]}${description}`);
             } else if (header[1] === 18) {
               const description = details[1] === '' ? '' : (flight[18] === '' ? '' : ' - ') + details[1];
