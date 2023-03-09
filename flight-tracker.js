@@ -97,7 +97,15 @@ async function list () {
       for (const flightId in res) {
         if (flightId !== 'full_count' && flightId !== 'version') {
           const flight = res[flightId];
-          const details = await getDetails(flightId);
+          let details;
+          while (true) {
+            try {
+              details = await getDetails(flightId);
+              break;
+            } catch (err) {
+              await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+          }
           const tr = document.createElement('tr');
           for (const header of headers) {
             if (header[1] === 8) {
