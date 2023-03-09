@@ -1,4 +1,5 @@
 const FLIGHTRADAR_URL = 'https://api.codetabs.com/v1/proxy?quest=https://data-live.flightradar24.com/';
+const FIXED_COUNTRY_CODES = [['AFG', 'AF'], ['AGO', 'AG'], ['ARE', 'AE'], ['ARM', 'AM'], ['AUS', 'AU'], ['AUT', 'AT'], ['AZE', 'AZ'], ['BEL', 'BE'], ['BFA', 'BF'], ['BGD', 'BD'], ['BRA', 'BR'], ['CAN', 'CA'], ['CHN', 'CN'], ['CMR', 'CM'], ['COG', 'CG'], ['CPV', 'CV'], ['CYP', 'CY'], ['CZE', 'CZ'], ['DEU', 'DE'], ['DJI', 'DJ'], ['DNK', 'DK'], ['DZA', 'DZ'], ['EGY', 'EG'], ['ESP', 'ES'], ['EST', 'EE'], ['FIN', 'FI'], ['FRA', 'FR'], ['GAB', 'GA'], ['GBR', 'GB'], ['GEO', 'GE'], ['GGY', 'GG'], ['GHA', 'GH'], ['GIN', 'GN'], ['GNQ', 'GQ'], ['GRC', 'GR'], ['GRL', 'GL'], ['HRV', 'HR'], ['HUN', 'HU'], ['IDN', 'ID'], ['IND', 'IN'], ['IRL', 'IE'], ['IRN', 'IR'], ['IRQ', 'IR'], ['ISR', 'IL'], ['ITA', 'IT'], ['JPN', 'JP'], ['KAZ', 'KZ'], ['KEN', 'KE'], ['KGZ', 'KG'], ['KOR', 'KR'], ['LAO', 'LA'], ['LBR', 'LR'], ['LBY', 'LB'], ['LTU', 'LT'], ['MAC', 'MO'], ['MAR', 'MA'], ['MDA', 'MD'], ['MKD', 'MK'], ['MLI', 'ML'], ['MMR', 'MM'], ['MNE', 'ME'], ['MNP', 'MP'], ['MOZ', 'MZ'], ['MUS', 'MU'], ['MYS', 'MY'], ['NAM', 'NA'], ['NER', 'NE'], ['NGA', 'NG'], ['NLD', 'NL'], ['NOR', 'NO'], ['PAK', 'PK'], ['PHL', 'PH'], ['POL', 'PL'], ['PRT', 'PT'], ['QAT', 'QA'], ['ROU', 'RO'], ['RUS', 'RU'], ['RWA', 'RW'], ['SAU', 'SA'], ['SDN', 'SD'], ['SLE', 'SL'], ['SVK', 'SK'], ['SWE', 'SE'], ['TGO', 'TG'], ['THA', 'TH'], ['TJK', 'TJ'], ['TKM', 'TM'], ['TLS', 'TL'], ['TUN', 'TN'], ['TUR', 'TR'], ['TWN', 'TW'], ['TZA', 'TZ'], ['UGA', 'UG'], ['USA', 'US'], ['UZB', 'UZ'], ['VEN', 'VE'], ['VNM', 'VN'], ['ZWE', 'ZW']];
 const headers = [['Latitude', 1], ['Longitude', 2], ['Heading', 3], ['Altitude', 4], ['Ground Speed', 5], ['On Ground', 14], ['Vertical Speed', 15], ['Aircraft', 8], ['Registration', 9], ['Origin Airport', 11], ['Destination Airport', 12], ['Flight', 13], ['Call Sign', 16], ['Airline', 18], ['Flightradar24 Link', 19]];
 const tr = document.createElement('tr');
 for (const header of headers) {
@@ -13,6 +14,9 @@ function createElement(tr, type, content) {
 }
 
 function getFlagEmoji(countryCode) {
+  for (const code of FIXED_COUNTRY_CODES) {
+    countryCode = countryCode.replace(code[0], code[1]);
+  }
   const codePoints = countryCode
     .toUpperCase()
     .split('')
