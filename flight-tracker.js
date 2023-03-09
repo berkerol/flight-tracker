@@ -1,4 +1,4 @@
-/* global createButtonGroup createElement createModalButton createModal keyUpHandler */
+/* global FIXED_COUNTRY_CODES createButtonGroup createElement createModalButton createModal keyUpHandler */
 const FLIGHTRADAR_URL = 'https://api.codetabs.com/v1/proxy?quest=https://data-live.flightradar24.com/';
 
 const params = new URLSearchParams(window.location.search);
@@ -66,6 +66,9 @@ window.save = function () {
 };
 
 function getFlagEmoji (countryCode) {
+  for (const code of FIXED_COUNTRY_CODES) {
+    countryCode = countryCode.replace(code[0], code[1]);
+  }
   const codePoints = countryCode
     .toUpperCase()
     .split('')
