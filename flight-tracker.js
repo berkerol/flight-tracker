@@ -1,4 +1,4 @@
-/* global FIXED_COUNTRY_CODES createButtonGroup createElement createModalButton createModal keyUpHandler */
+/* global FIXED_COUNTRY_CODES REGISTRATION_COUNTRIES createButtonGroup createElement createModalButton createModal keyUpHandler */
 const FLIGHTRADAR_URL = 'https://api.codetabs.com/v1/proxy?quest=https://data-live.flightradar24.com/';
 
 const params = new URLSearchParams(window.location.search);
@@ -65,10 +65,14 @@ window.save = function () {
   list();
 };
 
-function getFlagEmoji (countryCode) {
+function fixCountryCode (countryCode) {
   for (const code of FIXED_COUNTRY_CODES) {
     countryCode = countryCode.replace(code[0], code[1]);
   }
+  return countryCode;
+}
+
+function getFlagEmoji (countryCode) {
   const codePoints = countryCode
     .toUpperCase()
     .split('')
@@ -114,11 +118,19 @@ async function list () {
             if (header[1] === 8) {
               const description = details[0] === '' ? '' : ` - ${details[0]}`;
               tr.appendChild(createElement('td', `${flight[8]}${description}`));
+            } else if (header[1] === 9) {
+              let description = '';
+              for (const country of REGISTRATION_COUNTRIES) {
+                if (flight[9].startsWith(country[0])) {
+                  description = ` - ${getFlagEmoji(country[1])} ${country[2]}`;
+                }
+              }
+              tr.appendChild(createElement('td', `${flight[9]}${description}`));
             } else if (header[1] === 11) {
-              const description = details[2] === '' ? '' : ` - ${getFlagEmoji(details[2])} ${details[3].replace(' Airport', '')}`;
+              const description = details[2] === '' ? '' : ` - ${getFlagEmoji(fixCountryCode(details[2]))} ${details[3].replace(' Airport', '')}`;
               tr.appendChild(createElement('td', `${flight[11]}${description}`));
             } else if (header[1] === 12) {
-              const description = details[4] === '' ? '' : ` - ${getFlagEmoji(details[4])} ${details[5].replace(' Airport', '')}`;
+              const description = details[4] === '' ? '' : ` - ${getFlagEmoji(fixCountryCode(details[4]))} ${details[5].replace(' Airport', '')}`;
               tr.appendChild(createElement('td', `${flight[12]}${description}`));
             } else if (header[1] === 18) {
               const description = details[1] === '' ? '' : (flight[18] === '' ? '' : ' - ') + details[1];
