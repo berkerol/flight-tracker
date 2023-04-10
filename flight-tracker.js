@@ -10,6 +10,9 @@ const defaultGround = params.has('ground') ? params.get('ground') : 0;
 const defaultAir = params.has('air') ? params.get('air') : 1;
 const defaultVehicles = params.has('vehicles') ? params.get('vehicles') : 0;
 const defaultGliders = params.has('gliders') ? params.get('gliders') : 0;
+const defaultLatitudeRange = 0.3;
+const defaultLongitudeRange = 0.3;
+const defaultHighAccuracy = false;
 let topCoordinate;
 let bottomCoordinate;
 let leftCoordinate;
@@ -18,11 +21,14 @@ let ground;
 let air;
 let vehicles;
 let gliders;
+let latitudeRange;
+let longitudeRange;
+let highAccuracy;
 
-const modalElements = [[['Top Coordinate', 'topCoordinate', 'text'], ['Bottom Coordinate', 'bottomCoordinate', 'text'], ['Left Coordinate', 'leftCoordinate', 'text'], ['Right Coordinate', 'rightCoordinate', 'text']], [['Ground', 'ground', 'check'], ['Air', 'air', 'check'], ['Vehicles', 'vehicles', 'check'], ['Gliders', 'gliders', 'check']]];
-const buttonElements = [['success', 'list()', 'r', 'sync', '<u>R</u>efresh'], ['info', '', 's', 'cog', '<u>S</u>ettings']];
+const modalElements = [[['Top Coordinate', 'topCoordinate', 'text'], ['Bottom Coordinate', 'bottomCoordinate', 'text'], ['Left Coordinate', 'leftCoordinate', 'text'], ['Right Coordinate', 'rightCoordinate', 'text']], [['Ground', 'ground', 'check'], ['Air', 'air', 'check'], ['Vehicles', 'vehicles', 'check'], ['Gliders', 'gliders', 'check']], [['Latitude Range', 'latitudeRange', 'text'], ['Longitude Range', 'longitudeRange', 'text'], ['High Accuracy', 'highAccuracy', 'check']]];
+const buttonElements = [['success', 'list()', 'r', 'sync', '<u>R</u>efresh'], ['primary', 'setLocation()', 'l', 'location-arrow', 'Use my <u>L</u>ocation'], ['info', '', 's', 'cog', '<u>S</u>ettings']];
 const buttonGroup = createButtonGroup('btn-group btn-group-lg btn-group-center mt-3', buttonElements);
-document.getElementsByClassName('container')[0].insertBefore(createModalButton(buttonGroup, 1), document.getElementsByClassName('d-flex')[0]);
+document.getElementsByClassName('container')[0].insertBefore(createModalButton(buttonGroup, 2), document.getElementsByClassName('d-flex')[0]);
 createModal(modalElements);
 resetInputs();
 document.addEventListener('keyup', keyUpHandler);
@@ -43,6 +49,9 @@ function resetInputs () {
   air = defaultAir;
   vehicles = defaultVehicles;
   gliders = defaultGliders;
+  latitudeRange = defaultLatitudeRange;
+  longitudeRange = defaultLongitudeRange;
+  highAccuracy = defaultHighAccuracy;
   document.getElementById('topCoordinate').value = topCoordinate;
   document.getElementById('bottomCoordinate').value = bottomCoordinate;
   document.getElementById('leftCoordinate').value = leftCoordinate;
@@ -51,7 +60,27 @@ function resetInputs () {
   document.getElementById('air').checked = !!air;
   document.getElementById('vehicles').checked = !!vehicles;
   document.getElementById('gliders').checked = !!gliders;
+  document.getElementById('latitudeRange').value = latitudeRange;
+  document.getElementById('longitudeRange').value = longitudeRange;
+  document.getElementById('highAccuracy').checked = highAccuracy;
 }
+
+window.setLocation = function () {
+  navigator.geolocation.getCurrentPosition(pos => {
+    const round = number => Math.round(number * 10) / 10;
+    topCoordinate = round(pos.coords.latitude + latitudeRange);
+    bottomCoordinate = round(pos.coords.latitude - latitudeRange);
+    leftCoordinate = round(pos.coords.longitude - longitudeRange);
+    rightCoordinate = round(pos.coords.longitude + longitudeRange);
+    document.getElementById('topCoordinate').value = topCoordinate;
+    document.getElementById('bottomCoordinate').value = bottomCoordinate;
+    document.getElementById('leftCoordinate').value = leftCoordinate;
+    document.getElementById('rightCoordinate').value = rightCoordinate;
+    list();
+  }, err => {
+    window.alert(`Can not get position with error code ${err.code} and error message ${err.message}`);
+  }, { enableHighAccuracy: highAccuracy });
+};
 
 window.save = function () {
   topCoordinate = document.getElementById('topCoordinate').value;
@@ -62,6 +91,9 @@ window.save = function () {
   air = +document.getElementById('air').checked;
   vehicles = +document.getElementById('vehicles').checked;
   gliders = +document.getElementById('gliders').checked;
+  latitudeRange = +document.getElementById('latitudeRange').value;
+  longitudeRange = +document.getElementById('longitudeRange').value;
+  highAccuracy = document.getElementById('highAccuracy').checked;
   list();
 };
 
