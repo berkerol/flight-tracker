@@ -1,5 +1,6 @@
 /* global FIXED_COUNTRY_CODES REGISTRATION_COUNTRIES createButtonGroup createElement createModalButton createModal keyUpHandler */
-const FLIGHTRADAR_URL = 'https://api.codetabs.com/v1/proxy?quest=https://data-cloud.flightradar24.com/';
+const FLIGHTRADAR_URL_GET_FLIGHT_DETAILS = 'https://api.codetabs.com/v1/proxy?quest=https://data-live.flightradar24.com/';
+const FLIGHTRADAR_URL_LIST_FLIGHTS = 'https://api.codetabs.com/v1/proxy?quest=https://data-cloud.flightradar24.com/';
 
 const params = new URLSearchParams(window.location.search);
 const defaultTopCoordinate = params.has('top') ? params.get('top') : '48.4';
@@ -113,7 +114,7 @@ function getFlagEmoji (countryCode) {
 }
 
 async function getDetails (flightId) {
-  return window.fetch(`${FLIGHTRADAR_URL}clickhandler/?flight=${flightId}`, { headers: { Origin: 'https://berkerol.github.io' } })
+  return window.fetch(`${FLIGHTRADAR_URL_GET_FLIGHT_DETAILS}clickhandler/?flight=${flightId}`, { headers: { Origin: 'https://berkerol.github.io' } })
     .then(res => {
       return res.json();
     })
@@ -125,7 +126,7 @@ async function getDetails (flightId) {
 }
 
 async function list () {
-  await window.fetch(`${FLIGHTRADAR_URL}zones/fcgi/feed.js?bounds=${topCoordinate},${bottomCoordinate},${leftCoordinate},${rightCoordinate}&faa=1&satellite=1&mlat=1&flarm=1&adsb=1&gnd=${ground}&air=${air}&vehicles=${vehicles}&estimated=1&maxage=14400&gliders=${gliders}&stats=0`, { headers: { Origin: 'https://berkerol.github.io' } })
+  await window.fetch(`${FLIGHTRADAR_URL_LIST_FLIGHTS}zones/fcgi/feed.js?bounds=${topCoordinate},${bottomCoordinate},${leftCoordinate},${rightCoordinate}&faa=1&satellite=1&mlat=1&flarm=1&adsb=1&gnd=${ground}&air=${air}&vehicles=${vehicles}&estimated=1&maxage=14400&gliders=${gliders}&stats=0`, { headers: { Origin: 'https://berkerol.github.io' } })
     .then(res => {
       return res.json();
     })
