@@ -1,5 +1,5 @@
 /* global FIXED_COUNTRY_CODES REGISTRATION_COUNTRIES createButtonGroup createElement createModalButton createModal keyUpHandler */
-const FLIGHTRADAR_URL = 'https://api.codetabs.com/v1/proxy?quest=https://data-live.flightradar24.com/';
+const FLIGHTRADAR_URL = 'https://api.codetabs.com/v1/proxy?quest=https://data-cloud.flightradar24.com/';
 
 const params = new URLSearchParams(window.location.search);
 const defaultTopCoordinate = params.has('top') ? params.get('top') : '48.4';
